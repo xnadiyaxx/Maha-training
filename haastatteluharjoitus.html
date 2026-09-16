@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تدرّبي معي — مساحة آمنة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F0E8;
+    --surface:#FFFFFF;
+    --ink:#2E3532;
+    --muted:#6B7268;
+    --line:#DCD7C6;
+
+    --sage:#6B8068;
+    --sage-soft:#E4E9DF;
+    --gold:#B98A2E;
+    --gold-soft:#F3E7CC;
+    --rose:#B5573F;
+    --rose-soft:#F3E1DB;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Naskh Arabic', system-ui, sans-serif;
+    min-height:100vh;
+    padding:28px 18px 50px;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.7;
+  }
+  .wrap{max-width:560px;margin:0 auto;}
+
+  header{text-align:center;margin-bottom:26px;}
+  header .butterfly{font-size:30px;display:block;margin-bottom:8px;}
+  header h1{font-size:23px;font-weight:600;margin:0 0 6px;}
+  header p{color:var(--muted);font-size:15px;margin:0;max-width:420px;margin-inline:auto;}
+
+  .privacy-note{
+    display:flex;align-items:center;gap:8px;justify-content:center;
+    font-family:'Inter',sans-serif;font-size:12.5px;color:var(--sage);
+    background:var(--sage-soft);border-radius:999px;padding:8px 16px;
+    margin:18px auto 28px;max-width:fit-content;text-align:center;
+  }
+
+  .progress{display:flex;justify-content:center;gap:6px;margin-bottom:22px;}
+  .progress .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .2s ease, transform .2s ease;}
+  .progress .dot.done{background:var(--sage);}
+  .progress .dot.current{background:var(--gold);transform:scale(1.3);}
+
+  .stage{display:none;}
+  .stage.active{display:block;}
+
+  .intro-card, .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px 22px;
+  }
+
+  .intro-card ul{margin:16px 0 0;padding-inline-start:22px;}
+  .intro-card li{margin-bottom:8px;}
+
+  .mode-choice{display:grid;gap:10px;margin-top:20px;}
+  .mode-btn{
+    border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:16px;
+    font-family:'Noto Naskh Arabic',serif;font-size:16px;font-weight:600;color:var(--ink);
+    cursor:pointer;text-align:right;
+  }
+  .mode-btn small{display:block;font-weight:400;font-size:13.5px;color:var(--muted);margin-top:4px;}
+  .mode-btn.selected{border-color:var(--sage);background:var(--sage-soft);}
+
+  .start-btn, .primary-btn{
+    display:block;width:100%;background:var(--sage);color:#fff;border:none;border-radius:12px;
+    padding:15px;font-family:'Noto Naskh Arabic',serif;font-size:17px;font-weight:600;cursor:pointer;margin-top:22px;
+  }
+  .start-btn:disabled{background:var(--line);color:var(--muted);}
+
+  .question-label{font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);margin-bottom:10px;}
+  .question-text{font-size:19px;font-weight:600;margin:0 0 6px;line-height:1.6;}
+  .question-hint-toggle{
+    background:none;border:none;color:var(--gold);font-family:'Inter',sans-serif;
+    font-size:13px;cursor:pointer;padding:0;margin-top:6px;text-decoration:underline;
+  }
+  .question-hint{display:none;background:var(--gold-soft);border-radius:10px;padding:12px 14px;font-size:14.5px;color:#5c4415;margin-top:10px;}
+  .question-hint.show{display:block;}
+
+  textarea{
+    width:100%;margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:14px;
+    font-family:'Noto Naskh Arabic',serif;font-size:16px;color:var(--ink);background:var(--bg);
+    resize:vertical;min-height:100px;
+  }
+  textarea:focus{outline:2px solid var(--sage);outline-offset:1px;}
+
+  .video-area{margin-top:18px;}
+  .video-frame{
+    width:100%;aspect-ratio:4/3;background:#20241f;border-radius:14px;overflow:hidden;
+    position:relative;display:flex;align-items:center;justify-content:center;
+  }
+  .video-frame video{width:100%;height:100%;object-fit:cover;}
+  .rec-badge{
+    position:absolute;top:12px;inset-inline-start:12px;background:var(--rose);color:#fff;
+    font-family:'Inter',sans-serif;font-size:12px;padding:4px 10px;border-radius:999px;
+    display:none;align-items:center;gap:6px;
+  }
+  .rec-badge.show{display:flex;}
+  .rec-badge .pulse{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .video-controls{display:flex;gap:10px;margin-top:12px;}
+  .video-controls button{
+    flex:1;border:none;border-radius:12px;padding:13px;font-family:'Noto Naskh Arabic',serif;
+    font-size:15px;cursor:pointer;
+  }
+  .btn-record{background:var(--rose);color:#fff;}
+  .btn-stop{background:var(--ink);color:#fff;}
+  .btn-download{background:var(--gold);color:#fff;}
+  .btn-retry{background:var(--bg);color:var(--muted);border:1px solid var(--line) !important;}
+
+  .camera-permission-note{
+    font-family:'Inter',sans-serif;font-size:13px;color:var(--muted);text-align:center;
+    margin-top:10px;
+  }
+
+  .ack{display:none;background:var(--sage-soft);border-radius:10px;padding:12px 14px;margin-top:14px;font-size:15px;color:#3d4a3a;}
+  .ack.show{display:block;}
+
+  .nav-row{display:flex;gap:10px;margin-top:20px;}
+  .nav-row button{flex:1;border:none;border-radius:12px;padding:14px;font-family:'Noto Naskh Arabic',serif;font-size:16px;cursor:pointer;}
+  .btn-secondary{background:var(--bg);color:var(--muted);border:1px solid var(--line) !important;}
+  .btn-next{background:var(--sage);color:#fff;}
+
+  .summary-card h2{font-size:20px;margin:0 0 10px;}
+  .summary-card p{margin:0 0 12px;}
+
+  .restart-btn{
+    display:block;margin:22px auto 0;background:none;border:none;color:var(--muted);
+    font-family:'Inter',sans-serif;font-size:13px;text-decoration:underline;cursor:pointer;
+  }
+
+  footer{text-align:center;margin-top:30px;font-size:12.5px;color:var(--muted);font-family:'Inter',sans-serif;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="butterfly">🦋</span>
+    <h1>تدرّبي معي</h1>
+    <p>مساحة آمنة وهادئة، فقط لكِ، قبل المقابلة الحقيقية</p>
+  </header>
+
+  <div class="privacy-note">🔒 كل شيء يبقى في جهازكِ فقط — أنتِ من تقررين إن كنتِ تريدين إرسال أي شيء لأحد</div>
+
+  <div class="progress" id="progress"></div>
+
+  <!-- Intro -->
+  <div class="stage active" id="stage-intro">
+    <div class="intro-card">
+      <p style="margin-top:0;">هذا تمرين بسيط، وليس اختباراً حقيقياً — لا توجد إجابات صحيحة أو خاطئة هنا.</p>
+      <ul>
+        <li>سأطرح عليكِ أسئلة تشبه ما قد يُسأل في المقابلة الحقيقية</li>
+        <li>يمكنكِ الإجابة كتابةً، أو بتسجيل فيديو قصير لنفسكِ وأنتِ تتحدثين</li>
+        <li>يمكنكِ رؤية تلميح بسيط لكل سؤال إن أردتِ</li>
+        <li>خذي وقتكِ — لا يوجد وقت محدد أبداً</li>
+      </ul>
+
+      <div class="mode-choice">
+        <button class="mode-btn" id="modeText" onclick="selectMode('text')">
+          ✍️ الكتابة فقط
+          <small>أكتب إجابتي بدلاً من التحدث أمام الكاميرا</small>
+        </button>
+        <button class="mode-btn" id="modeVideo" onclick="selectMode('video')">
+          🎥 تسجيل فيديو لنفسي
+          <small>أتدرّب على التحدث أمام الكاميرا، تماماً كما في الاختبار الحقيقي</small>
+        </button>
+      </div>
+
+      <button class="start-btn" id="startBtn" onclick="startPractice()" disabled>لنبدأ 🌿</button>
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <div class="stage" id="stage-questions">
+    <div class="card">
+      <div class="question-label">سؤال <span id="qNum">1</span> من <span id="qTotal">9</span></div>
+      <p class="question-text" id="qText"></p>
+      <button class="question-hint-toggle" id="hintToggle" onclick="toggleHint()">إظهار تلميح لهذا السؤال</button>
+      <div class="question-hint" id="hintBox"></div>
+
+      <!-- Text mode -->
+      <div id="textAnswerArea">
+        <textarea id="answerBox" placeholder="اكتبي إجابتكِ هنا بحرّية..."></textarea>
+      </div>
+
+      <!-- Video mode -->
+      <div id="videoAnswerArea" class="video-area" style="display:none;">
+        <div class="video-frame">
+          <video id="liveVideo" autoplay muted playsinline></video>
+          <video id="playbackVideo" playsinline controls style="display:none;"></video>
+          <div class="rec-badge" id="recBadge"><span class="pulse"></span> جارٍ التسجيل</div>
+        </div>
+        <div class="video-controls" id="videoControlsIdle">
+          <button class="btn-record" onclick="startRecording()">🔴 ابدئي التسجيل</button>
+        </div>
+        <div class="video-controls" id="videoControlsRecording" style="display:none;">
+          <button class="btn-stop" onclick="stopRecording()">⏹️ إيقاف التسجيل</button>
+        </div>
+        <div class="video-controls" id="videoControlsDone" style="display:none;">
+          <button class="btn-retry" onclick="retryRecording()">إعادة التسجيل</button>
+          <button class="btn-download" id="downloadBtn">⬇️ حفظ هذا المقطع</button>
+        </div>
+        <p class="camera-permission-note" id="cameraNote"></p>
+      </div>
+
+      <div class="ack" id="ackBox"></div>
+
+      <div class="nav-row">
+        <button class="btn-secondary" onclick="skipQuestion()">تخطّي هذا السؤال</button>
+        <button class="btn-next" onclick="submitAnswer()">التالي</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="stage" id="stage-summary">
+    <div class="card summary-card">
+      <h2>أحسنتِ، يا مها! 🌹</h2>
+      <p>أجبتِ على كل الأسئلة، وهذا بحد ذاته إنجاز — كثيرون يتجنبون حتى المحاولة.</p>
+      <p>تذكّري: في الاختبار الحقيقي، لا يوجد إجابة "مثالية" — يوجد فقط إجابتكِ الصادقة والهادئة.</p>
+      <p style="color:var(--sage);font-weight:600;">أنتِ جاهزة أكثر مما تعتقدين 🦋</p>
+    </div>
+    <button class="restart-btn" onclick="restart()">التدرّب من جديد</button>
+  </div>
+
+  <footer>
+    صُنع بحبّ لمها 💕 — هذا تمرين شخصي فقط، وليس جزءاً من أي اختبار رسمي
+  </footer>
+
+</div>
+
+<script>
+const questions = [
+  { text: "حدثيني قليلاً عن نفسكِ، وعن أهم خبرة عملتِ فيها من قبل.",
+    hint: "لا داعي لسرد كل شيء — جملتان أو ثلاث تكفي: من أنتِ، وأين عملتِ، وما الذي تُتقنينه فعلاً." },
+  { text: "لماذا تودّين العمل في مجال خدمة العملاء تحديداً؟",
+    hint: "فكّري في شيء حقيقي أحببتِه في عملكِ السابق مع الناس — مثل مساعدة اللاجئين أو الترجمة — واربطيه بهذا المجال." },
+  { text: "تخيّلي عميلاً غاضباً يتحدث بصوت مرتفع بسبب مشكلة ليست خطأكِ. كيف تتعاملين مع هذا الموقف؟",
+    hint: "الفكرة المطلوبة عادة: الاستماع بهدوء أولاً، ثم فهم المشكلة، ثم اقتراح حل — دون أخذ الغضب على محمل شخصي." },
+  { text: "حدثيني عن موقف عملتِ فيه ضمن فريق لتحقيق هدف مشترك.",
+    hint: "خبرتكِ في التنسيق مع منظمات أخرى، أو العمل مع فريق الاستقبال، مثال ممتاز هنا." },
+  { text: "ما هي أكبر نقاط قوتكِ في العمل؟ وما هو جانب تحاولين تطويره؟",
+    hint: "اختاري نقطة قوة حقيقية (مثل التواصل أو الصبر)، وجانباً بسيطاً للتطوير — لا حاجة للكمال." },
+  { text: "كيف تتعاملين مع الضغط عندما يكون لديكِ أكثر من مهمة في نفس الوقت؟",
+    hint: "مثال بسيط من حياتكِ اليومية يكفي — كيف رتّبتِ أولوياتكِ في موقف مزدحم." },
+  { text: "ما مدى ارتياحكِ لاستخدام الحاسوب وبرامج مثل الوورد والإكسل في العمل اليومي؟",
+    hint: "الصدق هو الأفضل هنا: يمكنكِ القول إنه مضى وقت منذ استخدامكِ المكثف لها، لكنكِ تستطيعين استرجاع المهارة بسرعة." },
+  { text: "أين ترين نفسكِ بعد سنة من الآن في هذا العمل؟",
+    hint: "لا حاجة لخطة كبيرة — يكفي التعبير عن رغبتكِ في الاستقرار والتطور والتعلم." },
+  { text: "هل لديكِ أي أسئلة تودّين طرحها عنّا؟",
+    hint: "من الجيد دائماً أن يكون لديكِ سؤال أو اثنان — مثلاً عن فريق العمل أو التدريب في الأسابيع الأولى." }
+];
+
+const acknowledgements = [
+  "إجابة واضحة وصادقة 🌿",
+  "جميل — هذا بالضبط نوع الإجابة الهادئة المطلوبة 🌸",
+  "أحسنتِ، عبّرتِ عن نفسكِ بثقة 🌹",
+  "إجابة جيدة جداً، يا مها 💚",
+  "هذا يُظهر خبرتكِ الحقيقية بوضوح 🌟"
+];
+
+let current = 0;
+const total = questions.length;
+let mode = null; // 'text' or 'video'
+let mediaStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordedBlobUrl = null;
+
+function selectMode(m){
+  mode = m;
+  document.getElementById('modeText').classList.toggle('selected', m === 'text');
+  document.getElementById('modeVideo').classList.toggle('selected', m === 'video');
+  document.getElementById('startBtn').disabled = false;
+}
+
+async function startPractice(){
+  if(mode === 'video'){
+    try{
+      mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    }catch(e){
+      alert('تعذّر الوصول إلى الكاميرا أو الميكروفون. سنكمل بالكتابة بدلاً من ذلك.');
+      mode = 'text';
+    }
+  }
+  goToStage(1);
+}
+
+function renderProgress(){
+  const el = document.getElementById('progress');
+  el.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i < current ? ' done' : (i === current ? ' current' : ''));
+    el.appendChild(dot);
+  }
+}
+
+function showQuestion(){
+  const q = questions[current];
+  document.getElementById('qNum').textContent = current + 1;
+  document.getElementById('qTotal').textContent = total;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('hintBox').textContent = q.hint;
+  document.getElementById('hintBox').classList.remove('show');
+  document.getElementById('hintToggle').textContent = 'إظهار تلميح لهذا السؤال';
+  document.getElementById('ackBox').classList.remove('show');
+  renderProgress();
+
+  if(mode === 'video'){
+    document.getElementById('textAnswerArea').style.display = 'none';
+    document.getElementById('videoAnswerArea').style.display = 'block';
+    resetVideoUI();
+  } else {
+    document.getElementById('textAnswerArea').style.display = 'block';
+    document.getElementById('videoAnswerArea').style.display = 'none';
+    document.getElementById('answerBox').value = '';
+  }
+}
+
+function resetVideoUI(){
+  recordedChunks = [];
+  if(recordedBlobUrl){ URL.revokeObjectURL(recordedBlobUrl); recordedBlobUrl = null; }
+  const live = document.getElementById('liveVideo');
+  const playback = document.getElementById('playbackVideo');
+  live.srcObject = mediaStream;
+  live.style.display = 'block';
+  playback.style.display = 'none';
+  playback.removeAttribute('src');
+  document.getElementById('recBadge').classList.remove('show');
+  document.getElementById('videoControlsIdle').style.display = 'flex';
+  document.getElementById('videoControlsRecording').style.display = 'none';
+  document.getElementById('videoControlsDone').style.display = 'none';
+  document.getElementById('cameraNote').textContent = '';
+}
+
+function startRecording(){
+  recordedChunks = [];
+  mediaRecorder = new MediaRecorder(mediaStream, { mimeType: pickMimeType() });
+  mediaRecorder.ondataavailable = e => { if(e.data.size > 0) recordedChunks.push(e.data); };
+  mediaRecorder.onstop = onRecordingStopped;
+  mediaRecorder.start();
+  document.getElementById('recBadge').classList.add('show');
+  document.getElementById('videoControlsIdle').style.display = 'none';
+  document.getElementById('videoControlsRecording').style.display = 'flex';
+}
+
+function pickMimeType(){
+  const options = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
+  for(const o of options){ if(MediaRecorder.isTypeSupported(o)) return o; }
+  return '';
+}
+
+function stopRecording(){
+  mediaRecorder.stop();
+  document.getElementById('recBadge').classList.remove('show');
+}
+
+function onRecordingStopped(){
+  const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/webm' });
+  recordedBlobUrl = URL.createObjectURL(blob);
+
+  const live = document.getElementById('liveVideo');
+  const playback = document.getElementById('playbackVideo');
+  live.style.display = 'none';
+  playback.src = recordedBlobUrl;
+  playback.style.display = 'block';
+
+  document.getElementById('videoControlsRecording').style.display = 'none';
+  document.getElementById('videoControlsDone').style.display = 'flex';
+
+  const dlBtn = document.getElementById('downloadBtn');
+  dlBtn.onclick = () => {
+    const a = document.createElement('a');
+    a.href = recordedBlobUrl;
+    a.download = 'سؤال-' + (current + 1) + '.webm';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  document.getElementById('cameraNote').textContent = 'إذا أعجبكِ المقطع، احفظيه، ثم أرسليه بنفسكِ متى شئتِ.';
+}
+
+function retryRecording(){
+  resetVideoUI();
+}
+
+function toggleHint(){
+  const box = document.getElementById('hintBox');
+  const btn = document.getElementById('hintToggle');
+  box.classList.toggle('show');
+  btn.textContent = box.classList.contains('show') ? 'إخفاء التلميح' : 'إظهار تلميح لهذا السؤال';
+}
+
+function submitAnswer(){
+  if(mode === 'text'){
+    const answer = document.getElementById('answerBox').value.trim();
+    if(!answer){ skipQuestion(); return; }
+  }
+  const ack = document.getElementById('ackBox');
+  ack.textContent = acknowledgements[Math.floor(Math.random()*acknowledgements.length)];
+  ack.classList.add('show');
+  setTimeout(nextQuestion, 900);
+}
+
+function skipQuestion(){ nextQuestion(); }
+
+function nextQuestion(){
+  current++;
+  if(current >= total){
+    if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); }
+    goToStage(2);
+  } else {
+    showQuestion();
+  }
+}
+
+function goToStage(n){
+  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+  if(n === 0){
+    document.getElementById('stage-intro').classList.add('active');
+  } else if(n === 1){
+    current = 0;
+    document.getElementById('stage-questions').classList.add('active');
+    showQuestion();
+  } else if(n === 2){
+    document.getElementById('stage-summary').classList.add('active');
+    document.getElementById('progress').innerHTML = '';
+  }
+}
+
+function restart(){
+  mode = null;
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('modeText').classList.remove('selected');
+  document.getElementById('modeVideo').classList.remove('selected');
+  goToStage(0);
+}
+</script>
+</body>
+</html>
