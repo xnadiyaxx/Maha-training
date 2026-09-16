@@ -86,6 +86,14 @@
     font-family:'Inter',sans-serif;font-size:17px;color:var(--ink);line-height:1.6;
     direction:ltr;text-align:left;margin-bottom:14px;
   }
+  .esko-video-frame{
+    width:100%;border-radius:14px;overflow:hidden;background:#000;margin-bottom:14px;
+  }
+  .esko-video-frame video{width:100%;display:block;}
+  .esko-label{
+    display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;
+    font-size:12.5px;color:var(--muted);margin-bottom:8px;
+  }
   .question-text{font-size:16.5px;font-weight:600;margin:0 0 6px;line-height:1.6;color:var(--muted);}
 
   .question-hint-toggle{
@@ -192,6 +200,16 @@
       <div class="question-label">تمرين <span id="qNum">1</span> من <span id="qTotal">7</span></div>
       <span class="task-type" id="taskType"></span>
       <p class="question-text" id="qText"></p>
+
+      <div id="eskoVideoWrap" style="display:none;">
+        <div class="esko-label">🎥 استمعي لهذا السؤال:</div>
+        <div class="esko-video-frame">
+          <video id="eskoVideo" controls playsinline preload="metadata">
+            <source src="esko-kysymys.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
       <div class="en-prompt" id="enPrompt"></div>
 
       <button class="question-hint-toggle" id="hintToggle" onclick="toggleHint()">إظهار تلميح</button>
@@ -275,7 +293,11 @@ const questions = [
   { type: "read", label: "قراءة فقرة",
     text: "اقرئي هذه الفقرة القصيرة بصوت عالٍ، بوتيرة طبيعية:",
     prompt: "Thank you for your patience today. I have checked your account, and everything is now up to date. Is there anything else I can help you with?",
-    hint: "اقرئيها مرة بصمت أولاً لتتعرّفي على الكلمات، ثم اقرئيها بصوت عالٍ." }
+    hint: "اقرئيها مرة بصمت أولاً لتتعرّفي على الكلمات، ثم اقرئيها بصوت عالٍ." },
+  { type: "speak", label: "استماع وإجابة", video: true,
+    text: "استمعي للسؤال في الفيديو أعلاه، ثم أجيبي عليه بصوتكِ بالإنجليزية:",
+    prompt: "Question: \"What do you expect from your new job?\"",
+    hint: "يمكنكِ التحدث عن رغبتكِ في الاستقرار، وتعلّم أشياء جديدة، وبيئة عمل طيبة — جملتان بسيطتان تكفيان." }
 ];
 
 const acknowledgements = [
@@ -329,6 +351,7 @@ function showQuestion(){
   document.getElementById('qTotal').textContent = total;
   document.getElementById('qText').textContent = q.text;
   document.getElementById('enPrompt').textContent = q.prompt;
+  document.getElementById('eskoVideoWrap').style.display = q.video ? 'block' : 'none';
 
   const typeEl = document.getElementById('taskType');
   typeEl.textContent = q.label;
