@@ -44,7 +44,7 @@
     margin:18px auto 28px;max-width:fit-content;text-align:center;
   }
 
-  .progress{display:flex;justify-content:center;gap:6px;margin-bottom:22px;}
+  .progress{flex-wrap:wrap;display:flex;justify-content:center;gap:6px;margin-bottom:22px;}
   .progress .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .2s ease, transform .2s ease;}
   .progress .dot.done{background:var(--sage);}
   .progress .dot.current{background:var(--gold);transform:scale(1.3);}
@@ -161,7 +161,7 @@
 
   <header>
     <span class="butterfly">🦋</span>
-    <h1>تدرّبي على اختبار اللغة</h1>
+    <h1>تدرّبي على اللغة والمقابلة</h1>
     <p>قراءة ونطق بسيط بالإنجليزية، بهدوء وبدون أي ضغط</p>
   </header>
 
@@ -172,13 +172,16 @@
   <!-- Intro -->
   <div class="stage active" id="stage-intro">
     <div class="intro-card">
-      <p style="margin-top:0;">اختبار اللغة الحقيقي عادة يطلب منكِ أموراً بسيطة: القراءة بصوت عالٍ، والتحدث بحرّية لثوانٍ قليلة. هذا التمرين يشبهه، بهدوء ومن دون وقت محدد.</p>
-      <ul>
-        <li>بعض الفقرات تطلب منكِ القراءة بصوت عالٍ</li>
-        <li>وبعضها يطلب منكِ التحدث بحرّية بالإنجليزية لثوانٍ قليلة</li>
-        <li>يمكنكِ التدرّب بالفيديو، أو بالكتابة فقط إن كنتِ تفضّلين</li>
-      </ul>
-
+      <p>يا مها، هذا تدريب شخصي لوظيفة خدمة العملاء باللغة العربية لدى TP Greece، وليس اختبار الشركة الرسمي. لا نعرف الأسئلة الفعلية أو أوقاتها.</p>
+      <p style="color:var(--sage);font-weight:600;">جولة جديدة بأسئلة متنوعة. آخر سؤالين في المقابلة أكثر تحدياً، ويمكنكِ استخدام التلميحات عند الحاجة.</p>
+      <label for="section">ماذا تريدين أن تتدرّبي عليه؟</label>
+      <select id="section" style="width:100%;padding:12px;font:inherit;margin:10px 0">
+      <option value="language">اللغة الإنجليزية — ١٠ تمارين</option>
+      <option value="interview">مقابلة العمل — ١٣ سؤالاً</option>
+      <option value="both">اللغة والمقابلة معاً — ٢٣ تمريناً</option></select>
+      <p>تعليمات بالعربية وأسئلة بالإنجليزية. في المقابلة يمكنكِ التدريب بالعربية أولاً، ثم الإجابة بالإنجليزية. لا يوجد حدّ زمني في هذا التدريب.</p>
+      <details><summary>قبل التدريب بالكاميرا</summary><p>اختاري غرفة هادئة وجرّبي الصوت والصورة. للتدرّب على ظروف الاختبار، اجلسي وحدكِ وأغلقي التطبيقات والأجهزة الأخرى. في الاختبار الحقيقي اتبعي تعليماته الخاصة.</p></details>
+      <p>تبقى الإجابات والمقاطع في ذاكرة الصفحة حتى إغلاقها أو إعادة تحميلها. نزّلي ما تريدين الاحتفاظ به. لا يقيّم البرنامج اللغة أو النطق آلياً.</p>
       <div class="mode-choice">
         <button class="mode-btn" id="modeText" onclick="selectMode('text')">
           ✍️ الكتابة فقط
@@ -216,7 +219,7 @@
       <div class="question-hint" id="hintBox"></div>
 
       <div id="textAnswerArea">
-        <textarea id="answerBox" placeholder="اكتبي هنا ما ستقولينه..."></textarea>
+        <textarea id="answerBox" placeholder="اكتبي هنا ما تنوين قوله باللغة الإنجليزية..."></textarea>
       </div>
 
       <div id="videoAnswerArea" class="video-area" style="display:none;">
@@ -226,10 +229,10 @@
           <div class="rec-badge" id="recBadge"><span class="pulse"></span> جارٍ التسجيل</div>
         </div>
         <div class="video-controls" id="videoControlsIdle">
-          <button class="btn-record" onclick="startRecording()">🔴 ابدئي التسجيل</button>
+          <button class="btn-record" onclick="startRecording()">🔴 ابدئي تسجيل إجابتكِ</button>
         </div>
         <div class="video-controls" id="videoControlsRecording" style="display:none;">
-          <button class="btn-stop" onclick="stopRecording()">⏹️ إيقاف التسجيل</button>
+          <button class="btn-stop" onclick="stopRecording()">⏹️ أنهي تسجيل إجابتكِ</button>
         </div>
         <div class="video-controls" id="videoControlsDone" style="display:none;">
           <button class="btn-retry" onclick="retryRecording()">إعادة التسجيل</button>
@@ -251,10 +254,11 @@
   <div class="stage" id="stage-summary">
     <div class="card summary-card">
       <h2>رائع، يا مها! 🌹</h2>
-      <p>تدرّبتِ على القراءة والتحدث، وهذا وحده يقوّي ثقتكِ بصوتكِ.</p>
+      <p>انتهت الجولة. راجعي إجاباتكِ والمقاطع أدناه. هل أجبتِ عن السؤال؟ هل كان كلامكِ واضحاً؟ هل قدّمتِ مثالاً حقيقياً؟</p>
       <p>تذكّري: لا أحد يتوقع لغة مثالية بلا لكنة — المطلوب هو الوضوح والهدوء فقط.</p>
-      <p style="color:var(--sage);font-weight:600;">صوتكِ جاهز، يا فراشتي 🦋</p>
+      <p style="color:var(--sage);font-weight:600;">كل محاولة خطوة إلى الأمام 🦋</p>
     </div>
+    <button class="start-btn" onclick="downloadAnswers()">حفظ الإجابات المكتوبة</button><div id="review"></div>
     <button class="restart-btn" onclick="restart()">التدرّب من جديد</button>
   </div>
 
@@ -265,51 +269,176 @@
 </div>
 
 <script>
-const questions = [
-  { type: "read", label: "قراءة بصوت عالٍ",
-    text: "اقرئي هذه الجملة بصوت عالٍ وواضح، ببطء مريح:",
-    prompt: "Good afternoon, thank you for calling. How may I help you today?",
-    hint: "لا داعي للسرعة — تنفّسي بين الجمل، والوضوح أهم من السرعة." },
-  { type: "read", label: "قراءة بصوت عالٍ",
-    text: "اقرئي هذه الجملة بصوت عالٍ:",
-    prompt: "I understand your frustration, and I want to make sure we solve this as quickly as possible.",
-    hint: "ركّزي على الكلمات الطويلة مثل frustration و understand — قوليها ببطء." },
-  { type: "read", label: "أرقام وحروف",
-    text: "اقرئي هذا الرقم وهذا البريد الإلكتروني بصوت عالٍ، حرفاً حرفاً ورقماً رقماً:",
-    prompt: "Order number: 4 7 2 9 1\nEmail: m.support@example.com",
-    hint: "في اختبارات كهذه، غالباً يُطلب منكِ نطق الأرقام والحروف بوضوح — جرّبي ببطء." },
-  { type: "speak", label: "تحدّث حرّ",
-    text: "تحدّثي بحرّية بالإنجليزية لمدة ثلاثين ثانية تقريباً:",
-    prompt: "Describe your typical day, from morning until evening.",
-    hint: "لا حاجة لجمل معقدة — جمل بسيطة وصحيحة أفضل من جمل طويلة بها أخطاء." },
-  { type: "speak", label: "تحدّث حرّ",
-    text: "تحدّثي بحرّية بالإنجليزية:",
-    prompt: "Introduce yourself: your name, your background, and why you'd like this job.",
-    hint: "هذا شبيه بسؤال 'حدثيني عن نفسكِ' — يمكنكِ استخدام نفس الأفكار بالإنجليزية." },
-  { type: "speak", label: "موقف عمل",
-    text: "تخيّلي أن عميلاً يقول لكِ هذا، وردّي عليه بصوتٍ هادئ بالإنجليزية:",
-    prompt: "\"My order still hasn't arrived and I'm really upset about it.\"",
-    hint: "جملة بسيطة تكفي: اعتذار قصير + أنكِ ستساعدينه بمتابعة الطلب." },
-  { type: "read", label: "قراءة فقرة",
-    text: "اقرئي هذه الفقرة القصيرة بصوت عالٍ، بوتيرة طبيعية:",
-    prompt: "Thank you for your patience today. I have checked your account, and everything is now up to date. Is there anything else I can help you with?",
-    hint: "اقرئيها مرة بصمت أولاً لتتعرّفي على الكلمات، ثم اقرئيها بصوت عالٍ." },
-  { type: "speak", label: "استماع وإجابة", video: true,
-    text: "استمعي للسؤال في الفيديو أعلاه، ثم أجيبي عليه بصوتكِ بالإنجليزية:",
-    prompt: "Question: \"What do you expect from your new job?\"",
-    hint: "يمكنكِ التحدث عن رغبتكِ في الاستقرار، وتعلّم أشياء جديدة، وبيئة عمل طيبة — جملتان بسيطتان تكفيان." }
+const languageQuestions = [
+  {
+    "type": "read",
+    "label": "قراءة بصوت عالٍ",
+    "text": "اقرئي التحية بصوت واضح وبوتيرة مريحة.",
+    "prompt": "Welcome to customer support. My name is Maha. Could you please tell me how I can help you?",
+    "hint": "توقفي قليلاً بين الجمل واجعلي التحية ودودة."
+  },
+  {
+    "type": "read",
+    "label": "قراءة بصوت عالٍ",
+    "text": "اقرئي هذا الشرح للعميل بصوت عالٍ.",
+    "prompt": "I am sorry for the inconvenience. Before I check your account, I need to confirm a few details with you.",
+    "hint": "انتبهي إلى inconvenience و confirm. الوضوح أهم من السرعة."
+  },
+  {
+    "type": "read",
+    "label": "قراءة بصوت عالٍ",
+    "text": "اقرئي الرقم والوقت والبريد الإلكتروني بوضوح.",
+    "prompt": "Reference: 6 3 8 2 5\nAppointment: Thursday at 10:45 a.m.\nEmail: help.team@example.com",
+    "hint": "اقرئي الرقم خانة خانة، وانطقي at و dot في البريد الإلكتروني."
+  },
+  {
+    "type": "speak",
+    "label": "تحدّث وتواصل",
+    "text": "صفي طريقة تعلّمكِ مهارة جديدة بالإنجليزية.",
+    "prompt": "Tell me about something you learned recently. How did you practice it?",
+    "hint": "اختاري مثالاً حقيقياً واذكري خطوات التعلم."
+  },
+  {
+    "type": "speak",
+    "label": "تحدّث وتواصل",
+    "text": "تحدثي بالإنجليزية عن خبرة تساعدكِ في خدمة العملاء.",
+    "prompt": "How could your teaching or translation experience help you support customers?",
+    "hint": "إذا كانت هذه الخبرة تنطبق عليكِ، اربطيها بالاستماع والشرح والصبر."
+  },
+  {
+    "type": "speak",
+    "label": "تحدّث وتواصل",
+    "text": "ردّي بالإنجليزية على هذا العميل.",
+    "prompt": "I cannot sign in to my account, and I have already tried resetting my password.",
+    "hint": "اعترفي بالمشكلة واسألي سؤالاً مفيداً واحداً. لا تطلبي كلمة المرور."
+  },
+  {
+    "type": "read",
+    "label": "قراءة بصوت عالٍ",
+    "text": "اقرئي الرسالة بصوت عالٍ.",
+    "prompt": "I have sent your request to the appropriate team. We will contact you when we have an update. Thank you for giving us the opportunity to help.",
+    "hint": "توقفي عند النقاط وحافظي على نبرة طبيعية."
+  },
+  {
+    "type": "speak",
+    "label": "تحدّث وتواصل",
+    "text": "اطلبي توضيحاً بأدب بالإنجليزية.",
+    "prompt": "A customer speaks quickly and you do not understand the last part. What would you say?",
+    "hint": "يمكنكِ طلب التكرار أو إعادة الصياغة، ثم تأكيد ما فهمتِه."
+  },
+  {
+    "type": "speak",
+    "label": "تحدّث وتواصل",
+    "text": "اقرئي رسالة العمل ثم لخّصيها بالإنجليزية.",
+    "prompt": "Your shift starts at 9:00 tomorrow. Please join a training session at 9:15 and reply to confirm you can attend.\nExplain the instructions and give a short confirmation.",
+    "hint": "اذكري الموعدين والغرض من الرسالة ثم أكدي الحضور إذا كنتِ تستطيعين."
+  },
+  {
+    "type": "speak",
+    "label": "تحدّث وتواصل",
+    "text": "اشرحِي الخطوات بالإنجليزية بصورة مرتبة.",
+    "prompt": "Explain to a customer how to attach a file to an email. Assume they have never done it before.",
+    "hint": "استخدمي first و then و finally، وتأكدي أن العميل يستطيع المتابعة."
+  }
 ];
-
-const acknowledgements = [
-  "صوت واضح وهادئ 🌿",
-  "نطق جميل — استمري بنفس الهدوء 🌸",
-  "أحسنتِ، هذا بالضبط المطلوب 🌹",
-  "جميل جداً، يا مها 💚",
-  "ثقتكِ تظهر في صوتكِ 🌟"
+const interviewQuestions = [
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "قدّمي نفسكِ باختصار واشرحي ما الذي ستضيفينه إلى هذه الوظيفة.",
+    "prompt": "Give a brief introduction and explain what you would bring to this customer support role.",
+    "hint": "اربطي مهارة أو مهارتين حقيقيتين بالوظيفة، وركّزي على المعلومات ذات الصلة."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "ما الذي يجذبكِ للعمل مع فريق دولي في اليونان؟",
+    "prompt": "What interests you about working with an international team in Greece?",
+    "hint": "اشرحي دافعكِ الحقيقي وكيف ستتأقلمين مع بيئة عمل جديدة."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "حدثيني عن موقف شرحتِ فيه أمراً صعباً لشخص. كيف تأكدتِ أنه فهم؟",
+    "prompt": "Tell me about a time you explained something difficult to someone. How did you check they understood?",
+    "hint": "صفي موقفاً حقيقياً، وما فعلتِه، والنتيجة."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "صفي موقفاً اختلفتِ فيه مع زميل. كيف حللتِ الخلاف؟",
+    "prompt": "Describe a time you disagreed with a colleague. How did you resolve it?",
+    "hint": "ركّزي على الاستماع والنقاش باحترام والنتيجة. لا تختلقي مثالاً."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "حدثيني عن خطأ ارتكبتِه في العمل أو الدراسة. ماذا فعلتِ بعد ذلك؟",
+    "prompt": "Tell me about a mistake you made at work or while studying. What did you do next?",
+    "hint": "اختاري مثالاً حقيقياً واشرحي كيف صححتِه وما تعلمتِه."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "كيف تتصرفين إذا طرح العميل سؤالاً لا تعرفين إجابته؟",
+    "prompt": "How would you respond if a customer asked a question you could not answer?",
+    "hint": "كوني صادقة، واشرحي أنكِ ستتحققين، واستعيني بالجهة المناسبة."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "كيف تنظمين عملكِ عندما يحتاج عدة عملاء إلى المساعدة في الوقت نفسه؟",
+    "prompt": "How do you organize your work when several customers need help at once?",
+    "hint": "اشرحي كيف تراعين الأولوية وتتبعين الإجراءات وتبقين العملاء على علم."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "كيف تتعاملين مع ملاحظة أن ردودكِ للعملاء طويلة جداً؟",
+    "prompt": "How would you handle feedback that your customer replies were too long?",
+    "hint": "اشرحي كيف تطلبين مثالاً وتتدربين على ردود أقصر وتتابعين تحسنكِ."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "ما مهام الحاسوب التي تجيدينها، وما الذي تحتاجين إلى التدرب عليه قبل البدء؟",
+    "prompt": "Which computer tasks can you do confidently, and what would you need to practice before starting?",
+    "hint": "اذكري مهارات حالية محددة واحتياجات تعلم واقعية."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "ما الذي يساعدكِ على التأقلم مع بلد جديد وجدول عمل جديد؟",
+    "prompt": "What would help you settle into a new country and a new work schedule?",
+    "hint": "تحدثي بصدق عن الاستعداد العملي، ولا تعدي بأوقات عمل لا تستطيعين الالتزام بها."
+  },
+  {
+    "type": "speak",
+    "label": "مقابلة عمل",
+    "text": "ماذا تسألين مسؤول التوظيف عن التدريب والنجاح في الأشهر الثلاثة الأولى؟",
+    "prompt": "What would you ask the recruiter about training and success in the first three months?",
+    "hint": "جهّزي سؤالين محددين عن التعلم أو الدعم أو التوقعات."
+  },
+  {
+    "type": "speak",
+    "label": "تحدٍّ إضافي",
+    "text": "يطلب عميل استرداد المال فوراً، لكن السياسة تتطلب مراجعة أولاً. ويهدد بالشكوى علناً. ماذا تقولين وماذا تفعلين؟",
+    "prompt": "A customer demands an immediate refund, but the policy requires a review first. They threaten to complain publicly. What would you say and do?",
+    "hint": "اعترفي بانزعاجه، واشرحي المراجعة بوضوح، وقدّمي الخطوات المسموحة وصعّدي الأمر عند الحاجة. لا تعدي باسترداد أو موعد دون صلاحية."
+  },
+  {
+    "type": "speak",
+    "label": "تحدٍّ إضافي",
+    "text": "أعطيتِ عميلاً معلومة خاطئة وقد تصرف بناءً عليها. كيف تصححين الموقف، وماذا توثقين أو تبلغين؟",
+    "prompt": "You gave a customer incorrect information and they have acted on it. How would you correct the situation, and what would you record or report?",
+    "hint": "تحمّلي المسؤولية، وتحققي من المعلومة الصحيحة، واعتذري، واشرحي الحل ضمن صلاحياتكِ، ووثّقي الأثر أو أبلغي الجهة المناسبة."
+  }
 ];
-
+let questions = languageQuestions;
+const savedAnswers = {};
+const savedVideos = {};
 let current = 0;
-const total = questions.length;
+let total = questions.length;
 let mode = null;
 let mediaStream = null;
 let mediaRecorder = null;
@@ -324,6 +453,10 @@ function selectMode(m){
 }
 
 async function startPractice(){
+  const section = document.getElementById('section').value;
+  questions = section === 'interview' ? interviewQuestions : section === 'both' ? [...languageQuestions,...interviewQuestions] : languageQuestions;
+  total = questions.length;
+
   if(mode === 'video'){
     try{
       mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -351,7 +484,7 @@ function showQuestion(){
   document.getElementById('qTotal').textContent = total;
   document.getElementById('qText').textContent = q.text;
   document.getElementById('enPrompt').textContent = q.prompt;
-  document.getElementById('eskoVideoWrap').style.display = q.video ? 'block' : 'none';
+  document.getElementById('eskoVideoWrap').style.display = 'none';
 
   const typeEl = document.getElementById('taskType');
   typeEl.textContent = q.label;
@@ -370,13 +503,13 @@ function showQuestion(){
   } else {
     document.getElementById('textAnswerArea').style.display = 'block';
     document.getElementById('videoAnswerArea').style.display = 'none';
-    document.getElementById('answerBox').value = '';
+    document.getElementById('answerBox').value = savedAnswers[current] || '';
   }
 }
 
 function resetVideoUI(){
   recordedChunks = [];
-  if(recordedBlobUrl){ URL.revokeObjectURL(recordedBlobUrl); recordedBlobUrl = null; }
+  recordedBlobUrl = null;
   const live = document.getElementById('liveVideo');
   const playback = document.getElementById('playbackVideo');
   live.srcObject = mediaStream;
@@ -391,8 +524,11 @@ function resetVideoUI(){
 }
 
 function startRecording(){
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') return;
   recordedChunks = [];
-  mediaRecorder = new MediaRecorder(mediaStream, { mimeType: pickMimeType() });
+  if(!window.MediaRecorder){ alert('هذا المتصفح لا يدعم التسجيل. استخدمي الكتابة أو متصفحاً يدعم التسجيل.'); return; }
+  const mime = pickMimeType();
+  try { mediaRecorder = new MediaRecorder(mediaStream, mime ? {mimeType:mime} : undefined); } catch(e) { alert('تعذّر بدء التسجيل. جرّبي الكتابة أو متصفحاً آخر.'); return; }
   mediaRecorder.ondataavailable = e => { if(e.data.size > 0) recordedChunks.push(e.data); };
   mediaRecorder.onstop = onRecordingStopped;
   mediaRecorder.start();
@@ -408,13 +544,16 @@ function pickMimeType(){
 }
 
 function stopRecording(){
+  if(!mediaRecorder || mediaRecorder.state !== 'recording') return;
   mediaRecorder.stop();
   document.getElementById('recBadge').classList.remove('show');
 }
 
 function onRecordingStopped(){
   const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/webm' });
+  if(savedVideos[current]) URL.revokeObjectURL(savedVideos[current].url);
   recordedBlobUrl = URL.createObjectURL(blob);
+  savedVideos[current] = {url:recordedBlobUrl, type:blob.type};
 
   const live = document.getElementById('liveVideo');
   const playback = document.getElementById('playbackVideo');
@@ -429,7 +568,7 @@ function onRecordingStopped(){
   dlBtn.onclick = () => {
     const a = document.createElement('a');
     a.href = recordedBlobUrl;
-    a.download = 'تمرين-لغة-' + (current + 1) + '.webm';
+    a.download = 'practice-' + (current + 1) + (blob.type.includes('mp4') ? '.mp4' : '.webm');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -447,18 +586,19 @@ function toggleHint(){
 }
 
 function submitAnswer(){
-  if(mode === 'text'){
-    const answer = document.getElementById('answerBox').value.trim();
-    if(!answer){ skipQuestion(); return; }
-  }
-  const ack = document.getElementById('ackBox');
-  ack.textContent = acknowledgements[Math.floor(Math.random()*acknowledgements.length)];
-  ack.classList.add('show');
-  setTimeout(nextQuestion, 900);
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') { alert('أوقفي التسجيل أولاً ثم اضغطي التالي.'); return; }
+  if(mode === 'text') savedAnswers[current] = document.getElementById('answerBox').value.trim();
+  nextQuestion();
 }
-
-function skipQuestion(){ nextQuestion(); }
-
+function skipQuestion(){
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') { alert('أوقفي التسجيل أولاً.'); return; }
+  nextQuestion();
+}
+function downloadAnswers(){
+  const text = questions.map((q,i) => (i+1)+'. '+q.prompt+'\n'+(savedAnswers[i] || '[No written answer]')).join('\n\n');
+  const url = URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+  const a = document.createElement('a'); a.href=url; a.download='practice-answers.txt'; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
 function nextQuestion(){
   current++;
   if(current >= total){
@@ -480,10 +620,25 @@ function goToStage(n){
   } else if(n === 2){
     document.getElementById('stage-summary').classList.add('active');
     document.getElementById('progress').innerHTML = '';
+    const review = document.getElementById('review'); review.replaceChildren();
+    questions.forEach((q,i)=>{
+      const item = document.createElement('div'); item.className='card'; item.style.marginTop='12px';
+      const title = document.createElement('p'); title.dir='ltr'; title.textContent=(i+1)+'. '+q.prompt; item.appendChild(title);
+      const answer = document.createElement('p'); answer.dir='auto'; answer.textContent=savedAnswers[i] || (savedVideos[i] ? 'تم تسجيل فيديو' : 'لم تُسجّل إجابة'); item.appendChild(answer);
+      if(savedVideos[i]) {
+        const video=document.createElement('video'); video.controls=true; video.playsInline=true; video.src=savedVideos[i].url; video.style.width='100%'; item.appendChild(video);
+        const link=document.createElement('a'); link.href=savedVideos[i].url; link.download='practice-'+(i+1)+(savedVideos[i].type.includes('mp4')?'.mp4':'.webm'); link.textContent='⬇ حفظ الفيديو'; item.appendChild(link);
+      }
+      review.appendChild(item);
+    });
   }
 }
 
 function restart(){
+  if(!confirm("بدء جولة جديدة يمحو الإجابات والمقاطع من الصفحة. هل حفظتِ ما تحتاجينه؟")) return;
+  Object.values(savedVideos).forEach(v=>URL.revokeObjectURL(v.url));
+  Object.keys(savedVideos).forEach(k=>delete savedVideos[k]);
+  Object.keys(savedAnswers).forEach(k=>delete savedAnswers[k]);
   mode = null;
   document.getElementById('startBtn').disabled = true;
   document.getElementById('modeText').classList.remove('selected');
